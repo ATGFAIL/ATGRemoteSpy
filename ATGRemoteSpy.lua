@@ -2320,7 +2320,7 @@ if configs.supersecretdevtoggle then
         return "Load's Simple Spy V3"
     end,
     function()
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/78n/SimpleSpy/main/SimpleSpySource.lua"))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/ATGFAIL/ATGRemoteSpy/main/ATGRemoteSpy.lua"))()
     end)
     local SuperSecretFolder = Create("Folder",{Parent = SimpleSpy3})
     newButton("SUPER SECRET BUTTON",function()
