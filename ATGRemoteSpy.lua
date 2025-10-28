@@ -1903,12 +1903,10 @@ end
 if not getgenv().SimpleSpyExecuted then
     local succeeded,err = pcall(function()
         if not RunService:IsClient() then
-            error("SimpleSpy cannot run on the server!")
         end
         getgenv().SimpleSpyShutdown = shutdown
         onToggleButtonClick()
         if not hookmetamethod then
-            ErrorPrompt("Simple Spy V3 will not function to it's fullest capablity due to your executor not supporting hookmetamethod.",true)
         end
         codebox = Highlight.new(CodeBox)
         logthread(spawn(function()
