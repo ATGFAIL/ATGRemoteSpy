@@ -1,4 +1,5 @@
--- SImple Spy เวอร์ชั่นดัดแปลงเป็น ATGRemoteSpy
+-- https://v3rmillion.net/showthread.php?tid=1198556
+-- https://github.com/78n/SimpleSpy
 
 if getgenv().SimpleSpyExecuted and type(getgenv().SimpleSpyShutdown) == "function" then
     getgenv().SimpleSpyShutdown()
@@ -116,19 +117,19 @@ local function Search(logtable,tbl)
 end
 
 local function IsCyclicTable(tbl)
-    local checkedtables = {}
+	local checkedtables = {}
 
     local function SearchTable(tbl)
         table.insert(checkedtables,tbl)
         
-        for i,v in next, tbl do -- Stupid mistake on my part thanks 59it for pointing it out
+        for i,v in tbl do
             if type(v) == "table" then
                 return table.find(checkedtables,v) and true or SearchTable(v)
             end
         end
     end
 
-    return SearchTable(tbl)
+	return SearchTable(tbl)
 end
 
 local function deepclone(args: table, copies: table): table
@@ -154,25 +155,25 @@ local function deepclone(args: table, copies: table): table
 end
 
 local function rawtostring(userdata)
-    if type(userdata) == "table" or typeof(userdata) == "userdata" then
-        local rawmetatable = getrawmetatable(userdata)
-        local cachedstring = rawmetatable and rawget(rawmetatable, "__tostring")
+	if type(userdata) == "table" or typeof(userdata) == "userdata" then
+		local rawmetatable = getrawmetatable(userdata)
+		local cachedstring = rawmetatable and rawget(rawmetatable, "__tostring")
 
-        if cachedstring then
+		if cachedstring then
             local wasreadonly = isreadonly(rawmetatable)
             if wasreadonly then
                 makewritable(rawmetatable)
             end
-            rawset(rawmetatable, "__tostring", nil)
-            local safestring = tostring(userdata)
-            rawset(rawmetatable, "__tostring", cachedstring)
+			rawset(rawmetatable, "__tostring", nil)
+			local safestring = tostring(userdata)
+			rawset(rawmetatable, "__tostring", cachedstring)
             if wasreadonly then
                 makereadonly(rawmetatable)
             end
-            return safestring
-        end
-    end
-    return tostring(userdata)
+			return safestring
+		end
+	end
+	return tostring(userdata)
 end
 
 local CoreGui = SafeGetService("CoreGui")
@@ -183,7 +184,6 @@ local TweenService = SafeGetService("TweenService")
 local ContentProvider = SafeGetService("ContentProvider")
 local TextService = SafeGetService("TextService")
 local http = SafeGetService("HttpService")
-local GuiInset = game:GetService("GuiService"):GetGuiInset() :: Vector2 -- pulled from rewrite
 
 local function jsone(str) return http:JSONEncode(str) end
 local function jsond(str)
@@ -220,7 +220,6 @@ function ErrorPrompt(Message,state)
 end
 
 local Highlight = (isfile and loadfile and isfile("Highlight.lua") and loadfile("Highlight.lua")()) or loadstring(game:HttpGet("https://raw.githubusercontent.com/78n/SimpleSpy/main/Highlight.lua"))()
-local LazyFix = loadstring(game:HttpGet("https://raw.githubusercontent.com/78n/Roblox/refs/heads/main/Lua/Libraries/DataToCode/DataToCode.luau"))() -- Very lazy fix as I'm legit just pasting it from the rewrite
 
 local SimpleSpy3 = Create("ScreenGui",{ResetOnSpawn = false})
 local Storage = Create("Folder",{})
@@ -233,7 +232,7 @@ local CodeBox = Create("Frame",{Parent = RightPanel,BackgroundColor3 = Color3.ne
 local ScrollingFrame = Create("ScrollingFrame",{Parent = RightPanel,Active = true,BackgroundColor3 = Color3.new(1, 1, 1),BackgroundTransparency = 1,Position = UDim2.new(0, 0, 0.5, 0),Size = UDim2.new(1, 0, 0.5, -9),CanvasSize = UDim2.new(0, 0, 0, 0),ScrollBarThickness = 4})
 local UIGridLayout = Create("UIGridLayout",{Parent = ScrollingFrame,HorizontalAlignment = Enum.HorizontalAlignment.Center,SortOrder = Enum.SortOrder.LayoutOrder,CellPadding = UDim2.new(0, 0, 0, 0),CellSize = UDim2.new(0, 94, 0, 27)})
 local TopBar = Create("Frame",{Parent = Background,BackgroundColor3 = Color3.fromRGB(37, 35, 38),BorderSizePixel = 0,Size = UDim2.new(0, 450, 0, 19)})
-local Simple = Create("TextButton",{Parent = TopBar,BackgroundColor3 = Color3.new(1, 1, 1),AutoButtonColor = false,BackgroundTransparency = 1,Position = UDim2.new(0, 5, 0, 0),Size = UDim2.new(0, 57, 0, 18),Font = Enum.Font.SourceSansBold,Text =  "ATGRemoteSpy",TextColor3 = Color3.new(1, 1, 1),TextSize = 14,TextXAlignment = Enum.TextXAlignment.Left})
+local Simple = Create("TextButton",{Parent = TopBar,BackgroundColor3 = Color3.new(1, 1, 1),AutoButtonColor = false,BackgroundTransparency = 1,Position = UDim2.new(0, 5, 0, 0),Size = UDim2.new(0, 57, 0, 18),Font = Enum.Font.SourceSansBold,Text =  "SimpleSpy",TextColor3 = Color3.new(1, 1, 1),TextSize = 14,TextXAlignment = Enum.TextXAlignment.Left})
 local CloseButton = Create("TextButton",{Parent = TopBar,BackgroundColor3 = Color3.new(0.145098, 0.141176, 0.14902),BorderSizePixel = 0,Position = UDim2.new(1, -19, 0, 0),Size = UDim2.new(0, 19, 0, 19),Font = Enum.Font.SourceSans,Text = "",TextColor3 = Color3.new(0, 0, 0),TextSize = 14})
 local ImageLabel = Create("ImageLabel",{Parent = CloseButton,BackgroundColor3 = Color3.new(1, 1, 1),BackgroundTransparency = 1,Position = UDim2.new(0, 5, 0, 5),Size = UDim2.new(0, 9, 0, 9),Image = "http://www.roblox.com/asset/?id=5597086202"})
 local MaximizeButton = Create("TextButton",{Parent = TopBar,BackgroundColor3 = Color3.new(0.145098, 0.141176, 0.14902),BorderSizePixel = 0,Position = UDim2.new(1, -38, 0, 0),Size = UDim2.new(0, 19, 0, 19),Font = Enum.Font.SourceSans,Text = "",TextColor3 = Color3.new(0, 0, 0),TextSize = 14})
@@ -306,14 +305,12 @@ local running_threads = {}
 local originalnamecall
 
 local remoteEvent = Instance.new("RemoteEvent",Storage)
-local unreliableRemoteEvent = Instance.new("UnreliableRemoteEvent")
 local remoteFunction = Instance.new("RemoteFunction",Storage)
 local NamecallHandler = Instance.new("BindableEvent",Storage)
 local IndexHandler = Instance.new("BindableEvent",Storage)
 local GetDebugIdHandler = Instance.new("BindableFunction",Storage) --Thanks engo for the idea of using BindableFunctions
 
 local originalEvent = remoteEvent.FireServer
-local originalUnreliableEvent = unreliableRemoteEvent.FireServer
 local originalFunction = remoteFunction.InvokeServer
 local GetDebugIDInvoke = GetDebugIdHandler.Invoke
 
@@ -336,7 +333,7 @@ end
 
 xpcall(function()
     if isfile and readfile and isfolder and makefolder then
-        local cachedconfigs = isfile("ATGRemoteSpy//Settings.json") and jsond(readfile("ATGRemoteSpy//Settings.json"))
+        local cachedconfigs = isfile("SimpleSpy//Settings.json") and jsond(readfile("SimpleSpy//Settings.json"))
 
         if cachedconfigs then
             for i,v in next, realconfigs do
@@ -347,19 +344,19 @@ xpcall(function()
             realconfigs = cachedconfigs
         end
 
-        if not isfolder("ATGRemoteSpy") then
-            makefolder("ATGRemoteSpy")
+        if not isfolder("SimpleSpy") then
+            makefolder("SimpleSpy")
         end
-        if not isfolder("ATGRemoteSpy//Assets") then
-            makefolder("ATGRemoteSpy//Assets")
+        if not isfolder("SimpleSpy//Assets") then
+            makefolder("SimpleSpy//Assets")
         end
-        if not isfile("ATGRemoteSpy//Settings.json") then
-            writefile("ATGRemoteSpy//Settings.json",jsone(realconfigs))
+        if not isfile("SimpleSpy//Settings.json") then
+            writefile("SimpleSpy//Settings.json",jsone(realconfigs))
         end
 
         configsmetatable.__newindex = function(self,index,newindex)
             realconfigs[index] = newindex
-            writefile("ATGRemoteSpy//Settings.json",jsone(realconfigs))
+            writefile("SimpleSpy//Settings.json",jsone(realconfigs))
         end
     else
         configsmetatable.__newindex = function(self,index,newindex)
@@ -476,11 +473,11 @@ function bringBackOnResize()
             currentX = viewportSize.X - (sideClosed and 131 or Background.AbsoluteSize.X)
         end
     end
-    if (currentY < 0) or (currentY > (viewportSize.Y - (closed and 19 or Background.AbsoluteSize.Y) - GuiInset.Y)) then
+    if (currentY < 0) or (currentY > (viewportSize.Y - (closed and 19 or Background.AbsoluteSize.Y) - 36)) then
         if currentY < 0 then
             currentY = 0
         else
-            currentY = viewportSize.Y - (closed and 19 or Background.AbsoluteSize.Y) - GuiInset.Y
+            currentY = viewportSize.Y - (closed and 19 or Background.AbsoluteSize.Y) - 36
         end
     end
     TweenService.Create(TweenService, Background, TweenInfo.new(0.1), {Position = UDim2.new(0, currentX, 0, currentY)}):Play()
@@ -508,11 +505,11 @@ function onBarInput(input)
                             currentX = viewportSize.X - (sideClosed and 131 or TopBar.AbsoluteSize.X)
                         end
                     end
-                    if (currentY < 0 and currentY < currentPos.Y) or (currentY > (viewportSize.Y - (closed and 19 or Background.AbsoluteSize.Y) - GuiInset.Y) and currentY > currentPos.Y) then
+                    if (currentY < 0 and currentY < currentPos.Y) or (currentY > (viewportSize.Y - (closed and 19 or Background.AbsoluteSize.Y) - 36) and currentY > currentPos.Y) then
                         if currentY < 0 then
                             currentY = 0
                         else
-                            currentY = viewportSize.Y - (closed and 19 or Background.AbsoluteSize.Y) - GuiInset.Y
+                            currentY = viewportSize.Y - (closed and 19 or Background.AbsoluteSize.Y) - 36
                         end
                     end
                     currentPos = Vector2.new(currentX, currentY)
@@ -660,7 +657,7 @@ function toggleMaximize()
         TweenService:Create(CodeBox, TweenInfo.new(0.5), {Size = UDim2.new(0.5, 0, 0.5, 0), Position = UDim2.new(0.25, 0, 0.25, 0)}):Play()
         TweenService:Create(disable, TweenInfo.new(0.5), {BackgroundTransparency = 0.5}):Play()
         disable.MouseButton1Click:Connect(function()
-            if UserInputService:GetMouseLocation().Y + GuiInset.Y >= CodeBox.AbsolutePosition.Y and UserInputService:GetMouseLocation().Y + GuiInset.Y <= CodeBox.AbsolutePosition.Y + CodeBox.AbsoluteSize.Y and UserInputService:GetMouseLocation().X >= CodeBox.AbsolutePosition.X and UserInputService:GetMouseLocation().X <= CodeBox.AbsolutePosition.X + CodeBox.AbsoluteSize.X then
+            if UserInputService:GetMouseLocation().Y + 36 >= CodeBox.AbsolutePosition.Y and UserInputService:GetMouseLocation().Y + 36 <= CodeBox.AbsolutePosition.Y + CodeBox.AbsoluteSize.Y and UserInputService:GetMouseLocation().X >= CodeBox.AbsolutePosition.X and UserInputService:GetMouseLocation().X <= CodeBox.AbsolutePosition.X + CodeBox.AbsoluteSize.X then
                 return
             end
             TweenService:Create(CodeBox, TweenInfo.new(0.5), {Size = prevSize, Position = prevPos}):Play()
@@ -711,7 +708,7 @@ function mouseEntered()
         UserInputService.MouseIconEnabled = not mouseInGui
         customCursor.Visible = mouseInGui
         if mouseInGui and getgenv().SimpleSpyExecuted then
-            local mouseLocation = UserInputService:GetMouseLocation() - GuiInset
+            local mouseLocation = UserInputService:GetMouseLocation() - Vector2.new(0, 36)
             customCursor.Position = UDim2.fromOffset(mouseLocation.X - customCursor.AbsoluteSize.X / 2, mouseLocation.Y - customCursor.AbsoluteSize.Y / 2)
             local inRange, type = isInResizeRange(mouseLocation)
             if inRange and not closed then
@@ -731,7 +728,7 @@ end
 
 --- Called when mouse moves
 function mouseMoved()
-    local mousePos = UserInputService:GetMouseLocation() - GuiInset
+    local mousePos = UserInputService:GetMouseLocation() - Vector2.new(0, 36)
     if not closed
     and mousePos.X >= TopBar.AbsolutePosition.X and mousePos.X <= TopBar.AbsolutePosition.X + TopBar.AbsoluteSize.X
     and mousePos.Y >= Background.AbsolutePosition.Y and mousePos.Y <= Background.AbsolutePosition.Y + Background.AbsoluteSize.Y then
@@ -793,7 +790,7 @@ end
 --- Called on user input while mouse in 'Background' frame
 --- @param input InputObject
 function backgroundUserInput(input)
-    local mousePos = UserInputService:GetMouseLocation() - GuiInset
+    local mousePos = UserInputService:GetMouseLocation() - Vector2.new(0, 36)
     local inResizeRange, type = isInResizeRange(mousePos)
     if input.UserInputType == Enum.UserInputType.MouseButton1 and inResizeRange then
         local lastPos = UserInputService:GetMouseLocation()
@@ -1019,7 +1016,7 @@ function genScript(remote, args)
     local gen = ""
     if #args > 0 then
         xpcall(function()
-            gen = "local args = "..LazyFix.Convert(args, true) .. "\n"
+            gen = v2v({args = args}) .. "\n"
         end,function(err)
             gen ..= "-- An error has occured:\n--"..err.."\n-- TableToString failure! Reverting to legacy functionality (results may vary)\nlocal args = {"
             xpcall(function()
@@ -1051,16 +1048,16 @@ function genScript(remote, args)
         if not remote:IsDescendantOf(game) and not getnilrequired then
             gen = "function getNil(name,class) for _,v in next, getnilinstances()do if v.ClassName==class and v.Name==name then return v;end end end\n\n" .. gen
         end
-        if remote:IsA("RemoteEvent") or remote:IsA("UnreliableRemoteEvent") then
-            gen ..= LazyFix.ConvertKnown("Instance", remote) .. ":FireServer(unpack(args))"
+        if remote:IsA("RemoteEvent") then
+            gen ..= v2s(remote) .. ":FireServer(unpack(args))"
         elseif remote:IsA("RemoteFunction") then
-            gen = gen .. LazyFix.ConvertKnown("Instance", remote) .. ":InvokeServer(unpack(args))"
+            gen = gen .. v2s(remote) .. ":InvokeServer(unpack(args))"
         end
     else
-        if remote:IsA("RemoteEvent") or remote:IsA("UnreliableRemoteEvent") then
-            gen ..= LazyFix.ConvertKnown("Instance", remote) .. ":FireServer()"
+        if remote:IsA("RemoteEvent") then
+            gen ..= v2s(remote) .. ":FireServer()"
         elseif remote:IsA("RemoteFunction") then
-            gen ..= LazyFix.ConvertKnown("Instance", remote) .. ":InvokeServer()"
+            gen ..= v2s(remote) .. ":InvokeServer()"
         end
     end
     prevTables = {}
@@ -1695,7 +1692,7 @@ function remoteHandler(data)
         history[id].lastCall = tick()
     end
 
-    if (data.remote:IsA("RemoteEvent") or data.remote:IsA("UnreliableRemoteEvent")) and lower(data.method) == "fireserver" then
+    if data.remote:IsA("RemoteEvent") and lower(data.method) == "fireserver" then
         newRemote("event", data)
     elseif data.remote:IsA("RemoteFunction") and lower(data.method) == "invokeserver" then
         newRemote("function", data)
@@ -1706,7 +1703,7 @@ local newindex = function(method,originalfunction,...)
     if typeof(...) == 'Instance' then
         local remote = cloneref(...)
 
-        if remote:IsA("RemoteEvent") or remote:IsA("RemoteFunction") or remote:IsA("UnreliableRemoteEvent") then
+        if remote:IsA("RemoteEvent") or remote:IsA("RemoteFunction") then
             if not configs.logcheckcaller and checkcaller() then return originalfunction(...) end
             local id = ThreadGetDebugId(remote)
             local blockcheck = tablecheck(blocklist,remote,id)
@@ -1766,7 +1763,7 @@ local newnamecall = newcclosure(function(...)
         if typeof(...) == 'Instance' then
             local remote = cloneref(...)
 
-            if IsA(remote,"RemoteEvent") or IsA(remote,"RemoteFunction") or IsA(remote,"UnreliableRemoteEvent") then    
+            if IsA(remote,"RemoteEvent") or IsA(remote,"RemoteFunction") then    
                 if not configs.logcheckcaller and checkcaller() then return originalnamecall(...) end
                 local id = ThreadGetDebugId(remote)
                 local blockcheck = tablecheck(blocklist,remote,id)
@@ -1824,10 +1821,6 @@ local newFireServer = newcclosure(function(...)
     return newindex("FireServer",originalEvent,...)
 end)
 
-local newUnreliableFireServer = newcclosure(function(...)
-    return newindex("FireServer",originalUnreliableEvent,...)
-end)
-
 local newInvokeServer = newcclosure(function(...)
     return newindex("InvokeServer",originalFunction,...)
 end)
@@ -1837,7 +1830,6 @@ local function disablehooks()
         unhook(getrawmetatable(game).__namecall,originalnamecall)
         unhook(Instance.new("RemoteEvent").FireServer, originalEvent)
         unhook(Instance.new("RemoteFunction").InvokeServer, originalFunction)
-        unhook(Instance.new("UnreliableRemoteEvent").FireServer, originalUnreliableEvent)
         restorefunction(originalnamecall)
         restorefunction(originalEvent)
         restorefunction(originalFunction)
@@ -1849,7 +1841,6 @@ local function disablehooks()
         end
         hookfunction(Instance.new("RemoteEvent").FireServer, originalEvent)
         hookfunction(Instance.new("RemoteFunction").InvokeServer, originalFunction)
-        hookfunction(Instance.new("UnreliableRemoteEvent").FireServer, originalUnreliableEvent)
     end
 end
 
@@ -1861,7 +1852,6 @@ function toggleSpy()
             oldnamecall = hook(getrawmetatable(game).__namecall,clonefunction(newnamecall))
             originalEvent = hook(Instance.new("RemoteEvent").FireServer, clonefunction(newFireServer))
             originalFunction = hook(Instance.new("RemoteFunction").InvokeServer, clonefunction(newInvokeServer))
-            originalUnreliableEvent = hook(Instance.new("UnreliableRemoteEvent").FireServer, clonefunction(newUnreliableFireServer))
         else
             if hookmetamethod then
                 oldnamecall = hookmetamethod(game, "__namecall", clonefunction(newnamecall))
@@ -1870,7 +1860,6 @@ function toggleSpy()
             end
             originalEvent = hookfunction(Instance.new("RemoteEvent").FireServer, clonefunction(newFireServer))
             originalFunction = hookfunction(Instance.new("RemoteFunction").InvokeServer, clonefunction(newInvokeServer))
-            originalUnreliableEvent = hookfunction(Instance.new("UnreliableRemoteEvent").FireServer, clonefunction(newUnreliableFireServer))
         end
         originalnamecall = originalnamecall or function(...)
             return oldnamecall(...)
@@ -1928,12 +1917,12 @@ if not getgenv().SimpleSpyExecuted then
         end))
         getgenv().SimpleSpy = SimpleSpy
         getgenv().getNil = function(name,class)
-            for _,v in next, getnilinstances() do
-                if v.ClassName == class and v.Name == name then
-                    return v;
-                end
-            end
-        end
+			for _,v in next, getnilinstances() do
+				if v.ClassName == class and v.Name == name then
+					return v;
+				end
+			end
+		end
         Background.MouseEnter:Connect(function(...)
             mouseInGui = true
             mouseEntered()
@@ -2040,9 +2029,9 @@ newButton("Run Code",
             TextLabel.Text = "Executing..."
             xpcall(function()
                 local returnvalue
-                if Remote:IsA("RemoteEvent") or Remote:IsA("UnreliableRemoteEvent") then
+                if Remote:IsA("RemoteEvent") then
                     returnvalue = Remote:FireServer(unpack(selected.args))
-                elseif Remote:IsA("RemoteFunction") then
+                else
                     returnvalue = Remote:InvokeServer(unpack(selected.args))
                 end
 
@@ -2125,8 +2114,8 @@ function()
             codebox:setRaw("--[[Converting table to string please wait]]")
             selected.Function = v2v({functionInfo = info})
         end
-        codebox:setRaw("-- Calling function info\n-- Generated by the ATGRemoteSpy serializer\n\n"..selected.Function)
-        TextLabel.Text = "Done! Function info generated by the ATGRemoteSpy Serializer."
+        codebox:setRaw("-- Calling function info\n-- Generated by the SimpleSpy V3 serializer\n\n"..selected.Function)
+        TextLabel.Text = "Done! Function info generated by the SimpleSpy V3 Serializer."
     else
         TextLabel.Text = "Error! Selected function was not found."
     end
@@ -2307,6 +2296,17 @@ end,
 function()
     configs.advancedinfo = not configs.advancedinfo
     TextLabel.Text = ("[%s] Display more remoteinfo"):format(configs.advancedinfo and "ENABLED" or "DISABLED")
+end)
+
+newButton("Join Discord",function()
+    return "Joins The Simple Spy Discord"
+end,
+function()
+    setclipboard("https://discord.com/invite/AWS6ez9")
+    TextLabel.Text = "Copied invite to your clipboard"
+    if request then
+        request({Url = 'http://127.0.0.1:6463/rpc?v=1',Method = 'POST',Headers = {['Content-Type'] = 'application/json', Origin = 'https://discord.com'},Body = http:JSONEncode({cmd = 'INVITE_BROWSER',nonce = http:GenerateGUID(false),args = {code = 'AWS6ez9'}})})
+    end
 end)
 
 if configs.supersecretdevtoggle then
